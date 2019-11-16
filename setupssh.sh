@@ -215,31 +215,6 @@ function __main(){
 #MAINMENU
 #__main
 
-function STARTUP(){
-	titlessh
-	echo -en """
-Warning!
-You are about to generate a SSH KEY.
-
-I wrote this script will help you generate a key while at
-the same time, trying to explain every step taken along
-the way, to the best of my abilities.
-
-The key will not generate until you choose the option to
-generate one at the end, so if at any time you are lost,
-confused, and/or have no idea what you are doing, please
-exit the script by choosing the Quit option, or by hitting
-the [CTRL] + [C] keys.
-
-Thanks.
-
-[ Hit any key to continue ]
-
-"""
-	read -n 1
-	RESETVALUES
-	MAINMENU
-}
 
 function typecomments(){
 	titlessh
