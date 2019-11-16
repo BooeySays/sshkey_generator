@@ -1,6 +1,7 @@
 #!/bin/bash
 
-__VERSION__='0.1'
+__VERSION__='0.2'
+
 function RESETVALUES(){
 	PASSPHRASE='None'
 	OPTA='None'
@@ -80,14 +81,14 @@ Exiting ...
 
 function typekey(){
 	titlessh 'Encryption Key Type'
-	echo -en """Choose key type:
+	echo -en """\033[00;01mChoose key type:
 
-	[1]	dsa
-	[2] ecdsa
-	[3]	ed25519
-	[4] rsa
+	\033[00;01;38;5;51m[\033[00;01m1\033[00;01;38;5;51m]\033[00;01m dsa
+	\033[00;01;38;5;51m[\033[00;01m2\033[00;01;38;5;51m]\033[00;01m ecdsa
+	\033[00;01;38;5;51m[\033[00;01m3\033[00;01;38;5;51m]\033[00;01m ed25519
+	\033[00;01;38;5;51m[\033[00;01m4\033[00;01;38;5;51m]\033[00;01m rsa (\033[00;03mDefault\033[01;23m)
 
-	[Q]uit
+	\033[00;01;38;5;196m[\033[00;01mQ\033[00;01;38;5;196m]\033[00;01muit
 """
 	read -p ': ' -n 1
 	case "$REPLY" in
