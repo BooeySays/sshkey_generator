@@ -1,6 +1,6 @@
 #!/bin/bash
 
-__VERSION__='0.2'
+__VERSION__='0.3'
 
 function RESETVALUES(){
 	PASSPHRASE='None'
@@ -184,6 +184,36 @@ Passphrase successfully set !
 	MAINMENU
 }
 
+function overwriteask(){
+	echo -en """
+Do you want to overwrite the file?
+
+[y/N]: """
+	read -n 1
+	case "$REPLY" in
+		'y'|'Y')
+			rm "$SSHKEYFILENAME"
+			rm ""$SSHKEYFILENAME".pub"
+			;;
+		'n'|'N'|'')
+			echo -en """
+[ Hit any key to enter another filename ]
+
+"""
+			read -n 1
+			;;
+		*)
+			echo -en """
+ERROR - Invalid selection
+
+[ Hit any key to continue ]
+
+"""
+			overwriteask
+			;;
+	esac
+}
+
 function typefile(){
 	titlessh 'Filename'
 	echo -en """
@@ -194,14 +224,17 @@ Enter file in which to save the key (Default: \033[38;5;190m$HOME/.ssh/id_rsa\03
 	case "$SSHFILENAME" in
 		'')
 			SSHKEYFILENAME="$HOME/.ssh/id_rsa"
-			MAINMENU
 			;;
 		*)
 			SSHKEYFILENAME="$SSHFILENAME"
-			unset SSHFILENAME
-			MAINMENU
 			;;
 	esac
+	if [ -f "$SSHKEYFILENAME" ]; then
+		overwriteask
+		typefile
+	fi
+	unset SSHFILENAME
+	MAINMENU
 }
 
 function __main(){
@@ -242,12 +275,12 @@ Please set them before generating key.
 		ssh-keygen -q -t "$OPTA" -b "$OPTB" -f "$SSHKEYFILENAME" -P "$PASSPHRASE" -C "$COMMENTS"
 		echo -e "\r\033[00;01m[ \033[00;01;38;5;46mDONE \033[00;01m] Generating SSH keys with the entered values"
 		if [ $SSH_AGENT_PID ]; then
-			echo -en "\033[00;01m[ \033[00;01;38;5;190mWAIT \033[00;01m] Killing the current agent"
-			eval "$(ssh-agent -k)"
-			echo -e "\r\033[00;01m[ \033[00;01;38;5;46mDONE \033[00;01m] Killing the current agent"
+			echo -en "\033[00;01m[ \033[00;01;38;5;190mWAIT \033[00;01m] Starting ssh-agent in the background"
+			eval "$(ssh-agent -s)" 2&>/dev/null
+			echo -e "\r\033[00;01m[ \033[00;01;38;5;46mDONE \033[00;01m] Starting ssh-agent in the background"
 		fi
 		echo -en "\033[00;01m[ \033[00;01;38;5;190mWAIT \033[00;01m] Adding key"
-		ssh-add "$SSHKEYFILENAME"
+		ssh-add "$SSHKEYFILENAME" 2&>/dev/null
 		echo -e "\r\033[00;01m[ \033[00;01;38;5;46mDONE \033[00;01m] Adding key"
 	fi
 #	unset OPTA OPTB SSHKEYFILENAME PASSPHRASE COMMENTS
